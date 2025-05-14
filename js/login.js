@@ -1,114 +1,102 @@
-// 쿠키 저장 함수
-function setCookie(name, value, expiredays) {
-    const date = new Date();
-    date.setDate(date.getDate() + expiredays);
-    document.cookie = encodeURIComponent(name) + "=" + encodeURIComponent(value) + "; expires=" + date.toUTCString() + "; path=/";
+// XSS 방지 함수
+function check_xss(value) {
+  return value.replace(/[<>]/g, '');
 }
 
-// 쿠키 불러오기 함수
+// 입력값 검증 함수
+function check_input() {
+  const emailInput = document.getElementById('typeEmailX');
+  const passwordInput = document.getElementById('typePasswordX');
+  const emailValue = emailInput.value;
+  const passwordValue = passwordInput.value;
+
+  // 이메일 최소 길이 확인
+  if (emailValue.length < 5) {
+    alert('아이디는 최소 5글자 이상 입력해야 합니다.');
+    return false;
+  }
+
+  // 비밀번호 길이 확인
+  if (passwordValue.length < 12) {
+    alert('비밀번호는 반드시 12글자 이상 입력해야 합니다.');
+    return false;
+  }
+
+  // 특수문자 포함 여부 확인
+  const hasSpecialChar = /[!,@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(passwordValue);
+  if (!hasSpecialChar) {
+    alert('패스워드는 특수문자를 1개 이상 포함해야 합니다.');
+    return false;
+  }
+
+  // 대소문자 포함 여부 확인
+  const hasUpperCase = /[A-Z]+/.test(passwordValue);
+  const hasLowerCase = /[a-z]+/.test(passwordValue);
+  if (!hasUpperCase || !hasLowerCase) {
+    alert('패스워드는 대소문자를 1개 이상 포함해야 합니다.');
+    return false;
+  }
+
+  // XSS 방지 처리
+  const sanitizedEmail = check_xss(emailValue);
+  const sanitizedPassword = check_xss(passwordValue);
+
+  if (!sanitizedEmail || !sanitizedPassword) {
+    alert('입력값이 올바르지 않습니다.');
+    return false;
+  }
+
+  console.log('Sanitized Email:', sanitizedEmail);
+  console.log('Sanitized Password:', sanitizedPassword);
+
+  session_set(); // 세션 저장
+
+  document.getElementById('login_form').submit(); // 로그인 폼 제출
+}
+
+// 쿠키 가져오기 함수
 function getCookie(name) {
-    const cookieName = encodeURIComponent(name) + "=";
-    const cookieData = document.cookie;
-    let start = cookieData.indexOf(cookieName);
-    let value = "";
-
-    if (start !== -1) {
-        start += cookieName.length;
-        let end = cookieData.indexOf(";", start);
-        if (end === -1) end = cookieData.length;
-        value = decodeURIComponent(cookieData.substring(start, end));
-    }
-
-    return value;
+  const nameEq = name + "=";
+  const ca = document.cookie.split(';');
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+    if (c.indexOf(nameEq) === 0) return c.substring(nameEq.length, c.length);
+  }
+  return null;
 }
 
-// 로그인 횟수 증가 함수
-function login_count() {
-    let loginCount = getCookie("login_cnt");
-    loginCount = loginCount ? parseInt(loginCount) : 0; // 쿠키에서 로그인 횟수를 가져옴
-    loginCount += 1; // 횟수 증가
-    setCookie("login_cnt", loginCount, 7); // 쿠키에 로그인 횟수 저장 (7일간 유효)
-    console.log("로그인 횟수:", loginCount);
+// 아이디 저장 및 세션 확인 초기화 함수
+function init() {
+  const emailInput = document.getElementById('typeEmailX');
+  const idSaveCheck = document.getElementById('idSaveCheck');
+  const savedId = getCookie("id");
+
+  if (savedId) {
+    emailInput.value = savedId;
+    idSaveCheck.checked = true;
+  }
+
+  session_check(); // 세션 유효성 검사
 }
 
-// 로그아웃 횟수 증가 함수
-function logout_count() {
-    let logoutCount = getCookie("logout_cnt");
-    logoutCount = logoutCount ? parseInt(logoutCount) : 0; // 쿠키에서 로그아웃 횟수를 가져옴
-    logoutCount += 1; // 횟수 증가
-    setCookie("logout_cnt", logoutCount, 7); // 쿠키에 로그아웃 횟수 저장 (7일간 유효)
-    console.log("로그아웃 횟수:", logoutCount);
+// 세션 삭제 함수
+function session_del() {
+  if (sessionStorage) {
+    sessionStorage.removeItem("Session_Storage_test");
+    alert('로그아웃 버튼 클릭 확인 : 세션 스토리지를 삭제합니다.');
+  } else {
+    alert("세션 스토리지를 지원하지 않습니다.");
+  }
 }
-
-// 로그인 함수 예시
-const check_input = () => {
-    const loginForm = document.getElementById('login_form');
-    const emailInput = document.getElementById('typeEmailX');
-    const passwordInput = document.getElementById('typePasswordX');
-    const emailValue = emailInput.value.trim();
-    const passwordValue = passwordInput.value.trim();
-    const sanitizedPassword = check_xss(passwordInput);
-    const sanitizedEmail = check_xss(emailInput);
-
-    if (emailValue === '') {
-        alert('이메일을 입력하세요.');
-        return false;
-    }
-
-    if (passwordValue === '') {
-        alert('비밀번호를 입력하세요.');
-        return false;
-    }
-
-    if (emailValue.length < 5) {
-        alert('아이디는 최소 5글자 이상 입력해야 합니다.');
-        return false;
-    }
-
-    if (passwordValue.length < 12) {
-        alert('비밀번호는 반드시 12글자 이상 입력해야 합니다.');
-        return false;
-    }
-
-    const hasSpecialChar = passwordValue.match(/[!,@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/) !== null;
-    if (!hasSpecialChar) {
-        alert('패스워드는 특수문자를 1개 이상 포함해야 합니다.');
-        return false;
-    }
-
-    const hasUpperCase = passwordValue.match(/[A-Z]+/) !== null;
-    const hasLowerCase = passwordValue.match(/[a-z]+/) !== null;
-    if (!hasUpperCase || !hasLowerCase) {
-        alert('패스워드는 대소문자를 1개 이상 포함해야 합니다.');
-        return false;
-    }
-
-    if (!sanitizedEmail || !sanitizedPassword) {
-        return false;
-    }
-
-    // 로그인 카운트 증가
-    login_count();
-
-    const idsave_check = document.getElementById('idSaveCheck');
-    if (idsave_check.checked === true) {
-        setCookie("id", emailValue, 1);
-    } else {
-        setCookie("id", emailValue, 0);
-    }
-
-    loginForm.submit();
-};
 
 // 로그아웃 함수
 function logout() {
-    logout_count(); // 로그아웃 횟수 증가
-    session_del();  // 세션 삭제
-    location.href = '../index.html'; // 로그아웃 후 리디렉션
+  session_del(); // 세션 삭제
+  location.href = '../index.html'; // 메인 페이지로 이동
 }
 
-// 로그인 버튼 클릭 이벤트
-document.getElementById("login_btn").addEventListener('click', check_input);
-
-// 로그아웃 버튼 클릭 이벤트
-document.getElementById("logout_btn").addEventListener('click', logout);
+// 로그인 버튼에 이벤트 바인딩
+document.addEventListener('DOMContentLoaded', function () {
+  document.getElementById("login_btn").addEventListener('click', check_input);
+});
