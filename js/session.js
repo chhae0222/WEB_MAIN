@@ -1,6 +1,14 @@
-function session_set() { // 세션 저장
-  let session_id = document.querySelector("#typeEmailX"); // 이메일 입력
-  let session_pass = document.querySelector("#typePasswordX"); // 패스워드 입력
+import { encrypt_text, decrypt_text } from './crypto.js';
+
+export function session_set(){ //세션 저장(객체)
+let id = document.querySelector("#typeEmailX");
+let password = document.querySelector("#typePasswordX");
+let random = new Date(); // 랜덤 타임스탬프
+const obj = { // 객체 선언
+id : id.value,
+otp : random
+}
+// 다음 페이지 계속 작성하기
 
   if (sessionStorage) {
     let en_text = encrypt_text(session_pass.value); // 암호화된 텍스트
@@ -11,7 +19,7 @@ function session_set() { // 세션 저장
   }
 }
 
-function session_get() { // 세션 읽기
+export function session_get() { // 세션 읽기
   if (sessionStorage) {
     return sessionStorage.getItem("Session_Storage_pass");
   } else {
@@ -27,7 +35,7 @@ function init_logined() {
   }
 }
 
-function session_check() { // 세션 검사
+export function session_check() { // 세션 검사
   if (sessionStorage.getItem("Session_Storage_id")) {
     alert("이미 로그인 되었습니다.");
     location.href = "../login/index_login.html";

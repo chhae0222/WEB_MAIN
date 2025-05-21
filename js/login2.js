@@ -1,7 +1,11 @@
 import { session_set, session_get, session_check } from './session.js';
-// import { encrypt_text, decrypt_text } from '/crypto.js';
-// import { generateJWT, checkAuth } from './token.js';
+import { encrypt_text, decrypt_text } from './crypto.js';
+import { generateJWT, checkAuth } from './token.js';
 
+document.addEventListener('DOMContentLoaded', () => {
+checkAuth();
+init_logined();
+});
 
 // XSS 방지 함수
 function check_xss(value) {
