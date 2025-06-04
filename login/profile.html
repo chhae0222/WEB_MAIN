@@ -4,25 +4,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>STEAM MAIN</title>
-    <!-- <script type="text/javascript" src="../js/search.js" defer></script>
-    <script type="text/javascript" src="../js/popup.js" defer></script> -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="./profile.css">
-    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a037de47d2bd68c359ea0d7051cf2d19&libraries=services,clusterer,drawing"></script>
+    <title>PROFILE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/profile.css">
+    <script type="text/javascript"
+        src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a037de47d2bd68c359ea0d7051cf2d19&libraries=services,clusterer,drawing"></script>
     <script type="text/javascript" src="../js/map.js" defer></script>
+    <style>
+        body {
+            background-color: rgb(220, 59, 102);
+        }
+
+        .navbar {
+            background-color: rgb(190, 46, 90) !important;
+            max-width: 1050px;
+            margin: 0 auto;
+            border-radius: 8px;
+        }
+
+        .navbar .nav-link,
+        .navbar .navbar-brand,
+        .navbar .dropdown-toggle {
+            color: black !important;
+            font-weight: bold;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .navbar .navbar-toggler-icon {
+            filter: invert(1);
+        }
+
+        .navbar-nav .nav-item .nav-link.active {
+            color: black !important;
+            font-weight: bold;
+        }
+
+        .navbar-nav .nav-item .nav-link.disabled {
+            color: rgba(0, 0, 0, 0.5) !important;
+            font-weight: bold;
+        }
+
+        .navbar-nav .dropdown-menu .dropdown-item {
+            color: black;
+        }
+
+        .navbar-nav .dropdown-menu {
+            background-color: #f8f9fa;
+            border: 1px solid rgba(0, 0, 0, 0.15);
+        }
+
+        .navbar-nav .dropdown-menu .dropdown-item:hover {
+            background-color: #e9ecef;
+        }
+
+        .btn-outline-success {
+            background-color: black !important;
+            color: white !important;
+            border-color: black !important;
+            font-weight: bold;
+        }
+
+        .btn-outline-success:hover {
+            background-color: rgb(50, 50, 50) !important;
+            color: white !important;
+            border-color: rgb(50, 50, 50) !important;
+        }
+
+        .navbar .d-flex .form-control {
+            flex-grow: 1;
+            min-width: 150px;
+            margin-right: 15px;
+        }
+
+        .navbar .d-flex .btn {
+            flex-shrink: 0;
+            width: auto;
+            white-space: nowrap;
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
+        /* 카카오맵 관련 스타일 */
+        #map {
+            width: 100%;
+            height: 400px;
+        }
+
+        .map_wrap {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            height: 400px;
+            margin-top: 20px;
+        }
+
+        #menu_wrap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 250px;
+            margin: 10px 0;
+            padding: 5px;
+            overflow-y: auto;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 5px;
+            z-index: 1;
+            font-size: calc(1em * 2 / 3);
+            font-weight: bold;
+        }
+
+        #placesList li {
+            font-size: 0.9em;
+            font-weight: bold;
+            border-bottom: 1px solid #ddd;
+            padding: 5px 0;
+        }
+
+        .bg_white {
+            background: rgb(220, 59, 102);
+        }
+
+        #pagination {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        #pagination a {
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 0 5px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            text-decoration: none;
+            color: black;
+        }
+
+        #pagination a.on {
+            font-weight: bold;
+            background-color: #ddd;
+        }
+
+        table {
+            font-size: 13pt;
+            font-weight: lighter;
+            font-style: inherit;
+            color: rgb(186, 232, 198);
+        }
+
+        /* GitHub 이미지 스타일 */
+        .github-link-item {
+            padding: 20px;
+        }
+
+        .github-link {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 300px;
+            border-radius: inherit;
+            overflow: hidden;
+        }
+
+        .github-image-only {
+            max-width: 50%;
+            max-height: 50%;
+            display: block;
+            object-fit: contain;
+        }
+    </style>
 </head>
 
-<body style="background-color:rgb(65, 148, 169);" onload="pop_up()">
-    <div style="display: flex; justify-content: center;">
-        <img src="image/steam.svg" width="200" height="65" onmouseover="over(this)" onmouseout="out(this)">
-        <!-- <h3 style="font-size: 18px; font-weight: bold; font-style: inherit; color:rgb(186, 232, 198)">  STORE </h3> -->
+<body style="background-color:rgb(220, 59, 102);" >
+    <div style="display: flex; justify-content: center; margin-top: 20px;">
+        <img src="../image/logo.svg" width="200" height="65">
     </div>
 
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Navbar</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand" href="#"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -31,29 +196,40 @@
                         <a class="nav-link active" aria-current="page" href="http://127.0.0.1:5500/">홈페이지</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="https://store.steampowered.com/news/">뉴스</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://steamcommunity.com/">커뮤니티</a>
+                        <a class="nav-link" href="/login/profile.html">프로필</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
                             카테고리
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="https://store.steampowered.com/category/action/">액션</a></li>
-                            <li><a class="dropdown-item" href="https://store.steampowered.com/category/adventure/">어드벤쳐</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="https://store.steampowered.com/">Something else here</a></li>
+                            <li><a class="dropdown-item" href="https://pedia.watcha.com/ko-KR/?domain=movie">영화</a></li>
+                            <li><a class="dropdown-item" href="https://pedia.watcha.com/ko-KR/?domain=tv">시리즈</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            예매
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="http://www.cgv.co.kr/">CGV</a></li>
+                            <li><a class="dropdown-item" href="https://www.lottecinema.co.kr/NLCHS/">롯데시네마</a></li>
+                            <li><a class="dropdown-item" href="https://www.megabox.co.kr/">메가박스</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+                        <a class="nav-link" href="https://muko.kr/">커뮤니티</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://www.google.com/search?q=%EC%9D%B4%EB%B2%A4%ED%8A%B8">이벤트</a>
                     </li>
                 </ul>
 
                 <form class="d-flex" role="search" onsubmit="return googleSearch();">
-                    <input class="form-control me-2" id="search_input" name="q" type="search" placeholder="키워드 입력" aria-label="Search">
+                    <input class="form-control me-2" id="search_input" name="q" type="search" placeholder="키워드 입력"
+                        aria-label="Search">
                     <button class="btn btn-outline-success" id="search_btn" type="submit">검색</button>
                 </form>
             </div>
@@ -62,217 +238,185 @@
         </div>
     </nav>
 
-    <!-- <div class="container-fluid" style="display: flex; justify-content: center;">
-        <a href="https://store.steampowered.com/app/1608230/Planet_of_Lana/" target="_blank">
-            <img src="image/header.jpg" class="img-fluid" width="900" height="500"> >
-        </a>
-    </div> -->
+    <section style="background-color: rgb(220, 59, 102);">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col">
+                    <nav aria-label="breadcrumb" class="bg-body-tertiary rounded-3 p-3 mb-4">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item active" aria-current="page"><b>사용자 프로필</b></li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
 
-    <section style="background-color: #eee;">
-  <div class="container py-5">
-    <div class="row">
-      <div class="col">
-        <nav aria-label="breadcrumb" class="bg-body-tertiary rounded-3 p-3 mb-4">
-          <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item"><a href="#">Home</a></li>
-            <li class="breadcrumb-item"><a href="#">User</a></li>
-            <li class="breadcrumb-item active" aria-current="page">User Profile</li>
-          </ol>
-        </nav>
-      </div>
-    </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card mb-4">
+                        <div class="card-body text-center">
+                            <img src="../image/profile.png" alt="avatar" class="rounded-circle img-fluid"
+                                style="width: 150px;">
+                            <h5 class="my-3"><b>이은채</b></h5>
+                            <p class="text-muted mb-1"><b>Full Stack Developer</b></p>
+                            <p class="text-muted mb-4"><b>대한민국</b></p>
+                            <div class="d-flex justify-content-center mb-2">
+                                <button type="button" data-mdb-button-init data-mdb-ripple-init
+                                    class="btn btn-primary"><b>Follow</b></button>
+                                <button type="button" data-mdb-button-init data-mdb-ripple-init
+                                    class="btn btn-outline-primary ms-1"><b>Message</b></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mb-4 mb-lg-0">
+                        <div class="card-body p-0">
+                            <ul class="list-group list-group-flush rounded-3">
+                                <li class="list-group-item p-0 github-link-item">
+                                    <a href="https://github.com/chhae0222/WEB_MAIN.git" target="_blank" class="text-decoration-none github-link">
+                                        <img src="../image/github.png" alt="GitHub Icon" class="img-fluid github-image-only">
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0"><b>이름</b></p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="text-muted mb-0"><b>이은채</b></p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0"><b>이메일</b></p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="text-muted mb-0"><b>iiiiioio0101@sungkyul.ac.kr</b></p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0"><b>연락처</b></p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="text-muted mb-0"><b>010-8479-7752</b></p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <p class="mb-0"><b>주소</b></p>
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="text-muted mb-0"><b>경기도 안양시 만안구 성결대학로 53</b></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card mb-4 mb-md-0">
+                                <div class="card-body">
+                                    <p class="mb-4"><b><span class="text-primary font-italic me-1">프로그래밍 언어</span>
+                                        숙련도</b>
+                                    </p>
+                                    <p class="mb-1" style="font-size: .77rem;"><b>C++</b></p>
+                                    <div class="progress rounded" style="height: 5px;">
+                                        <div class="progress-bar bg-primary" role="progressbar" style="width: 80%"
+                                            aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <p class="mt-4 mb-1" style="font-size: .77rem;"><b>C</b></p>
+                                    <div class="progress rounded" style="height: 5px;">
+                                        <div class="progress-bar bg-primary" role="progressbar" style="width: 70%"
+                                            aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <p class="mt-4 mb-1" style="font-size: .77rem;"><b>C#</b></p>
+                                    <div class="progress rounded" style="height: 5px;">
+                                        <div class="progress-bar bg-primary" role="progressbar" style="width: 50%"
+                                            aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <p class="mt-4 mb-1" style="font-size: .77rem;"><b>JAVA</b></p>
+                                    <div class="progress rounded" style="height: 5px;">
+                                        <div class="progress-bar bg-primary" role="progressbar" style="width: 40%"
+                                            aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <p class="mt-4 mb-1" style="font-size: .77rem;"><b>파이썬</b></p>
+                                    <div class="progress rounded mb-2" style="height: 5px;">
+                                        <div class="progress-bar bg-primary" role="progressbar" style="width: 10%"
+                                            aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card mb-4 mb-md-0">
+                                <div class="card-body">
+                                    <p class="mb-4"><b><span class="text-primary font-italic me-1">진로 선택</span></b>
+                                    </p>
+                                    <p class="mb-1" style="font-size: .77rem;"><b>웹 프론트</b></p>
+                                    <div class="progress rounded" style="height: 5px;">
+                                        <div class="progress-bar bg-primary" role="progressbar" style="width: 70%"
+                                            aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <p class="mt-4 mb-1" style="font-size: .77rem;"><b>웹 디자인</b></p>
+                                    <div class="progress rounded" style="height: 5px;">
+                                        <div class="progress-bar bg-primary" role="progressbar" style="width: 80%"
+                                            aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <p class="mt-4 mb-1" style="font-size: .77rem;"><b>게임 기획</b></p>
+                                    <div class="progress rounded" style="height: 5px;">
+                                        <div class="progress-bar bg-primary" role="progressbar" style="width: 80%"
+                                            aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <p class="mt-4 mb-1" style="font-size: .77rem;"><b>게임 개발</b></p>
+                                    <div class="progress rounded" style="height: 5px;">
+                                        <div class="progress-bar bg-primary" role="progressbar" style="width: 70%"
+                                            aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <p class="mt-4 mb-1" style="font-size: .77rem;"><b>데이터 분석</b></p>
+                                    <div class="progress rounded mb-2" style="height: 5px;">
+                                        <div class="progress-bar bg-primary" role="progressbar" style="width: 70%"
+                                            aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="map_wrap" style="margin-top: 20px;">
+                        <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>
 
-    <div class="row">
-      <div class="col-lg-4">
-        <div class="card mb-4">
-          <div class="card-body text-center">
-            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
-              class="rounded-circle img-fluid" style="width: 150px;">
-            <h5 class="my-3">lee eunchae</h5>
-            <p class="text-muted mb-1">Full Stack Developer</p>
-            <p class="text-muted mb-4">south korea</p>
-            <div class="d-flex justify-content-center mb-2">
-              <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary">Follow</button>
-              <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-primary ms-1">Message</button>
-            </div>
-          </div>
-        </div>
-        <div class="card mb-4 mb-lg-0">
-          <div class="card-body p-0">
-            <ul class="list-group list-group-flush rounded-3">
-              <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                <i class="fas fa-globe fa-lg text-warning"></i>
-                <p class="mb-0">https://mdbootstrap.com</p>
-              </li>
-              <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                <i class="fab fa-github fa-lg text-body"></i>
-                <p class="mb-0">mdbootstrap</p>
-              </li>
-              <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                <i class="fab fa-twitter fa-lg" style="color: #55acee;"></i>
-                <p class="mb-0">@mdbootstrap</p>
-              </li>
-              <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                <i class="fab fa-instagram fa-lg" style="color: #ac2bac;"></i>
-                <p class="mb-0">mdbootstrap</p>
-              </li>
-              <li class="list-group-item d-flex justify-content-between align-items-center p-3">
-                <i class="fab fa-facebook-f fa-lg" style="color: #3b5998;"></i>
-                <p class="mb-0">mdbootstrap</p>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-8">
-        <div class="card mb-4">
-          <div class="card-body">
-            <div class="row">
-              <div class="col-sm-3">
-                <p class="mb-0">Full Name</p>
-              </div>
-              <div class="col-sm-9">
-                <p class="text-muted mb-0">lee eunchae</p>
-              </div>
-            </div>
-            <hr>
-            <div class="row">
-              <div class="col-sm-3">
-                <p class="mb-0">Email</p>
-              </div>
-              <div class="col-sm-9">
-                <p class="text-muted mb-0">iiiiioio0101@example.com</p>
-              </div>
-            </div>
-            <hr>
-            <div class="row">
-              <div class="col-sm-3">
-                <p class="mb-0">Phone</p>
-              </div>
-              <div class="col-sm-9">
-                <p class="text-muted mb-0">010-8479-7752</p>
-              </div>
-            </div>
-            <hr>
-            <div class="row">
-              <div class="col-sm-3">
-                <p class="mb-0">Mobile</p>
-              </div>
-              <div class="col-sm-9">
-                <p class="text-muted mb-0">x</p>
-              </div>
-            </div>
-            <hr>
-            <div class="row">
-              <div class="col-sm-3">
-                <p class="mb-0">Address</p>
-              </div>
-              <div class="col-sm-9">
-                <p class="text-muted mb-0">south korea</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="card mb-4 mb-md-0">
-              <div class="card-body">
-                <p class="mb-4"><span class="text-primary font-italic me-1">assigment</span> Project Status
-                </p>
-                <p class="mb-1" style="font-size: .77rem;">Web Design</p>
-                <div class="progress rounded" style="height: 5px;">
-                  <div class="progress-bar" role="progressbar" style="width: 80%" aria-valuenow="80"
-                    aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <p class="mt-4 mb-1" style="font-size: .77rem;">Website Markup</p>
-                <div class="progress rounded" style="height: 5px;">
-                  <div class="progress-bar" role="progressbar" style="width: 72%" aria-valuenow="72"
-                    aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <p class="mt-4 mb-1" style="font-size: .77rem;">One Page</p>
-                <div class="progress rounded" style="height: 5px;">
-                  <div class="progress-bar" role="progressbar" style="width: 89%" aria-valuenow="89"
-                    aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <p class="mt-4 mb-1" style="font-size: .77rem;">Mobile Template</p>
-                <div class="progress rounded" style="height: 5px;">
-                  <div class="progress-bar" role="progressbar" style="width: 55%" aria-valuenow="55"
-                    aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <p class="mt-4 mb-1" style="font-size: .77rem;">Backend API</p>
-                <div class="progress rounded mb-2" style="height: 5px;">
-                  <div class="progress-bar" role="progressbar" style="width: 66%" aria-valuenow="66"
-                    aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="card mb-4 mb-md-0">
-              <div class="card-body">
-                <p class="mb-4"><span class="text-primary font-italic me-1">assigment</span> Project Status
-                </p>
-                <p class="mb-1" style="font-size: .77rem;">Web Design</p>
-                <div class="progress rounded" style="height: 5px;">
-                  <div class="progress-bar" role="progressbar" style="width: 80%" aria-valuenow="80"
-                    aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <p class="mt-4 mb-1" style="font-size: .77rem;">Website Markup</p>
-                <div class="progress rounded" style="height: 5px;">
-                  <div class="progress-bar" role="progressbar" style="width: 72%" aria-valuenow="72"
-                    aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <p class="mt-4 mb-1" style="font-size: .77rem;">One Page</p>
-                <div class="progress rounded" style="height: 5px;">
-                  <div class="progress-bar" role="progressbar" style="width: 89%" aria-valuenow="89"
-                    aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <p class="mt-4 mb-1" style="font-size: .77rem;">Mobile Template</p>
-                <div class="progress rounded" style="height: 5px;">
-                  <div class="progress-bar" role="progressbar" style="width: 55%" aria-valuenow="55"
-                    aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <p class="mt-4 mb-1" style="font-size: .77rem;">Backend API</p>
-                <div class="progress rounded mb-2" style="height: 5px;">
-                  <div class="progress-bar" role="progressbar" style="width: 66%" aria-valuenow="66"
-                    aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- <div id="map" style="width:800px;height:400px;"></div> -->
+                        <div id="menu_wrap" class="bg_white" style="font-size: calc(1em * 2 / 3); font-weight: bold;">
+                            <div class="option">
+                                <div>
+                                    <form onsubmit="searchPlaces(); return false;">
+                                        <b>키워드 : </b><input type="text" value="이태원 맛집" id="keyword" size="15"
+                                            style="font-size: 1em;">
+                                        <button type="submit" style="font-size: 1em;"><b>검색하기</b></button>
+                                    </form>
+                                </div>
+                            </div>
+                            <hr>
+                            <ul id="placesList"></ul>
+                            <div id="pagination"></div>
+                        </div>
+                    </div>
 
-<div class="map_wrap">
-    <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>
+                    <p style="color: white;"><b><em>지도를 클릭해주세요!</em></b></p>
+                    <div id="clickLatlng"></div>
 
-    <div id="menu_wrap" class="bg_white">
-        <div class="option">
-            <div>
-                <form onsubmit="searchPlaces(); return false;">
-                    키워드 : <input type="text" value="이태원 맛집" id="keyword" size="15"> 
-                    <button type="submit">검색하기</button> 
-                </form>
+                </div>
             </div>
         </div>
-        <hr>
-        <ul id="placesList"></ul>
-        <div id="pagination"></div>
-    </div>
-</div>
-
-
-          <p><em>지도를 클릭해주세요!</em></p>
-          <div id="clickLatlng"></div>
-
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
     <table>
         <div style="display: flex; justify-content: center;">
-
             <style>
                 table {
                     font-size: 13pt;
@@ -281,45 +425,13 @@
                     color: rgb(186, 232, 198);
                 }
             </style>
-
-            <div style="display: flex; justify-content: center; margin-top: 30px;">
-                <table border="1" width="600" style="border-collapse: collapse; text-align: center;">
-                    <caption style="caption-side: top; font-size: 20px; font-weight: bold; padding: 10px;">
-                        인기 캐릭터
-                    </caption>
-                    <tbody>
-                        <tr style="background-color: red; color: white;">
-                            <td rowspan="2" width="80">사이온</td>
-                            <td>아리</td>
-                            <td>가렌</td>
-                            <td colspan="2">가렌2 + 가렌3</td>
-                        </tr>
-
-                        <tr style="background-color: #9f5cbc;">
-                            <td colspan="4">티모 / 이즈리얼 / 애쉬 / 케이틀린</td>
-                        </tr>
-
-                        <tr style="background-color: rgb(196, 190, 190);">
-                            <td colspan="5">
-                                <a href="https://store.steampowered.com/app/1426210/It_Takes_Two/" target="_blank" style="color: white; text-decoration: none;">
-                                    🎮 웹사이트 접속하기 🎮
-                                </a>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td style="background-color: blue; color: white;"><b>카직스</b></td>
-                            <td>루시안</td>
-                            <td>루시안2</td>
-                            <td colspan="2"><span style="font-size: 18px;">바이1, 2</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
         </div>
     </table>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a037de47d2bd68c359ea0d7051cf2d19&libraries=services,clusterer,drawing"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1mN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript"
+        src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a037de47d2bd68c359ea0d7051cf2d19&libraries=services,clusterer,drawing"></script>
 </body>
 
 </html>

@@ -1,155 +1,176 @@
 <!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>로그인 화면</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-      <script type="module" src="../js/login.js" defer></script>
-      <!-- <script type="text/javascript" src="../js/session.js" defer></script>
-      <script type="text/javascript" src="../js/crypto.js" defer></script>
-      <script type="text/javascript" src="../js/token.js" defer></script> -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js" integrity="sha512-a+SUDuwNzXDvz4XrIcXHuCf089/iJAoN4lmrXJg18XnduKK6YlDHNRalv4yd1N40OKI80tFidF+rqTFKGPoWFQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  
-  <style>
-    .gradient-custom {
-      background: linear-gradient(45deg, #0f0d26, #ec97b5);
-    }
-    .vh-100 {
-      height: 100vh;
-    }
-  </style>
-</head>
-<body class="text-center" >
-  <section class="vh-100 gradient-custom">
-    <div class="container py-5 h-100">
-      <div class="row d-flex justify-content-center align-items-center h-100">
-        <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-          <div class="card bg-dark text-white" style="border-radius: 1rem;">
-            <div class="card-body p-5 text-center">
-              <div class="mb-md-5 mt-md-4 pb-5">
-                <h2 class="fw-bold mb-2 text-uppercase">로그인 화면</h2>
-                <p class="text-white-50 mb-5">Please enter your login and password!</p>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>로그인 테스트</title>
+        
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        
+        <link rel="stylesheet" href="../css/login.css">
 
-                <form method="get" action="index_login.html" id="login_form">
-                  <div class="form-outline form-white mb-4">
-                    <input type="email" id="typeEmailX" class="form-control form-control-lg" name="id" />
-                    <label class="form-label" for="typeEmailX">이메일</label>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js" 
+                integrity="sha512-a+SUDuwNzXDvz4XrIcXHuCf089/iJAoN4lmrXJg18XnduKK6YlDHNRalv4yd1N40OKI80tFidF-rqTFKGPoWFQ==" 
+                crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.2.5/purify.min.js" integrity="sha512-/CUtA84sWWqWEBejNrrtWa7Yc4cth3Ome2ymvCKOo9YcZ4sh98tndUy4LutE2xGcAgD4fyz16y+gSyJdGCB5ww==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+        
+        <script type="module" src="../js/crypto.js" defer></script>
+        <script type="module" src="../js/crypto2.js" defer></script>
+        <script type="module" src="../js/token.js" defer></script>
+        <script type="module" src="../js/session.js" defer></script>
+        <script type="module" src="../js/login.js" defer></script>
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous" defer></script>
+
+        <script type="module">
+            import { session_set, session_check } from '../js/session.js';
+
+            function sanitize(input) {
+                return input.replace(/[^a-zA-Z0-9@._-]/g, ''); 
+            }
+
+            function check_xss(input) {
+                return sanitize(input);
+            }
+
+            function check_input() {
+                const emailInput = document.getElementById('typeEmailX');
+                const passwordInput = document.getElementById('typePasswordX');
+                const emailValue = emailInput.value;
+                const passwordValue = passwordInput.value;
+
+                if (emailValue.length < 5) {
+                    alert('아이디(이메일)는 최소 5글자 이상 입력해야 합니다.');
+                    emailInput.focus();
+                    return false;
+                }
+
+                if (passwordValue.length < 6) {
+                    alert('패스워드는 최소 6글자 이상 입력해야 합니다.');
+                    passwordInput.focus();
+                    return false;
+                }
+
+                const hasSpecialChar = /[!,@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(passwordValue);
+                if (!hasSpecialChar) {
+                    alert('패스워드는 특수문자를 1개 이상 포함해야 합니다.');
+                    passwordInput.focus();
+                    return false;
+                }
+
+                const hasUpperCase = /[A-Z]+/.test(passwordValue);
+                const hasLowerCase = /[a-z]+/.test(passwordValue);
+                if (!hasUpperCase || !hasLowerCase) {
+                    alert('패스워드는 대소문자를 1개 이상 포함해야 합니다.');
+                    passwordInput.focus();
+                    return false;
+                }
+
+                const sanitizedEmail = check_xss(emailValue);
+                const sanitizedPassword = check_xss(passwordValue);
+
+                console.log("Sanitized Email:", sanitizedEmail, "Sanitized Password:", sanitizedPassword);
+
+                // **여기서 실제 로그인 인증 로직을 수행합니다.**
+                // 간단한 예시로 'test@example.com'과 'Test!123'을 사용하겠습니다.
+                // 실제 서비스에서는 서버와 통신하여 사용자 정보를 확인해야 합니다.
+                if (sanitizedEmail === 'test@example.com' && sanitizedPassword === 'Test!123') {
+                    // 로그인 성공 시
+                    session_set(); // 세션 관련 함수 호출
+                    localStorage.setItem('isLoggedIn', 'true'); // 명시적으로 isLoggedIn을 true로 설정
+
+                    alert('로그인 성공!');
+                    // **로그인 성공 후 login 폴더 내의 index_login.html로 리다이렉션**
+                    // login.html과 index_login.html이 같은 폴더에 있으므로 'index_login.html'로 변경
+                    window.location.href = 'index_login.html'; 
+                } else {
+                    // 로그인 실패 시
+                    alert('아이디 또는 비밀번호가 올바르지 않습니다.');
+                    localStorage.removeItem('isLoggedIn'); // 로그인 실패 시 상태 제거
+                    return false;
+                }
+                
+                // 폼 제출은 JavaScript에서 직접 리다이렉션하므로 필요 없습니다.
+                // document.getElementById('login_form').submit(); 
+            }
+
+            document.getElementById("login_btn").addEventListener('click', check_input);
+
+            function getCookie(name) {
+                let value = "; " + document.cookie;
+                let parts = value.split("; " + name + "=");
+                if (parts.length === 2) return parts.pop().split(";").shift();
+                return null;
+            }
+
+            function init() {
+                const emailInput = document.getElementById('typeEmailX');
+                const idsave_check = document.getElementById('idSaveCheck');
+                let get_id = getCookie("id");
+                if (get_id) {
+                    emailInput.value = get_id;
+                    idsave_check.checked = true;
+                }
+                session_check(); 
+            }
+
+            document.addEventListener('DOMContentLoaded', init);
+
+        </script>
+    </head>
+    <body class="text-center"> 
+        <section class="vh-100 gradient-custom">
+            <div class="container py-5 h-100">
+              <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                  <div class="card bg-dark text-white" style="border-radius: 1rem;">
+                    <div class="card-body p-5 text-center">
+            
+                      <form method="get" id="login_form"> 
+                        <div class="mb-md-5 mt-md-4 pb-5">
+                            <h2 class="fw-bold mb-2 text-uppercase">로그인 메인화면</h2>
+                            <p class="text-white-50 mb-5">Please enter your login and password!</p>
+            
+                            <div data-mdb-input-init class="form-outline form-white mb-4">
+                            <input type="email" id="typeEmailX" class="form-control form-control-lg" name="id" />
+                            <label class="form-label" for="typeEmailX">이메일</label>
+                            </div> 
+            
+                            <div data-mdb-input-init class="form-outline form-white mb-4">
+                            <input type="password" id="typePasswordX" class="form-control form-control-lg" name="password" />
+                            <label class="form-label" for="typePasswordX">패스워드</label>
+                            </div> 
+            
+                            <p class="small mb-5 pb-lg-2"><a class="text-white-50" href="#!">Forgot password?</a></p>
+            
+                            <div class="checkbox mb-3">
+                              <label>
+                                       <input type="checkbox" value="remember-me" id="idSaveCheck"> 아이디 기억
+                              </label>
+                            </div>
+
+                            <button data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-light btn-lg px-5" id="login_btn" type="button">로그인하기</button>
+                            
+                            <div class="d-flex justify-content-center text-center mt-4 pt-1">
+                            <a href="#!" class="text-white"><i class="fab fa-facebook-f fa-lg"></i></a>
+                            <a href="#!" class="text-white"><i class="fab fa-twitter fa-lg mx-4 px-2"></i></a>
+                            <a href="#!" class="text-white"><i class="fab fa-google fa-lg"></i></a>
+                            </div>
+            
+                        </div>
+                        </form>
+            
+                      <div>
+                        <p class="mb-0">Don't have an account? <a href="#!" class="text-white-50 fw-bold">Sign Up</a>
+                        </p>
+                      </div>
+            
+                    </div>
                   </div>
-
-                  <div class="form-outline form-white mb-4">
-                    <input type="password" id="typePasswordX" class="form-control form-control-lg" name="password" />
-                    <label class="form-label" for="typePasswordX">패스워드</label>
-                  </div>
-
-                  <div class="checkbox mb-3">
-                    <label>
-                      <input type="checkbox" value="remember-me" id="idSaveCheck"> 아이디 기억
-                    </label>
-                  </div>
-
-                  <p class="small mb-5 pb-lg-2"><a class="text-white-50" href="#!">Forgot password?</a></p>
-
-                  <button data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-light btn-lg px-5" id="login_btn" type="button">로그인</button>
-                </form>
-
-                <div class="d-flex justify-content-center text-center mt-4 pt-1">
-                  <a href="#!" class="text-white"><i class="fab fa-facebook-f fa-lg"></i></a>
-                  <a href="#!" class="text-white"><i class="fab fa-twitter fa-lg mx-4 px-2"></i></a>
-                  <a href="#!" class="text-white"><i class="fab fa-google fa-lg"></i></a>
                 </div>
               </div>
-
-              <div>
-                <p class="mb-0">Don't have an account? <a href="join.html" class="text-white-50 fw-bold">회원가입</a></p>
-              </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 로그인 화면을 위한 스크립트 추가 -->
-  <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-  <script>
-    // sanitize 함수 정의 (XSS 방지용)
-    function sanitize(input) {
-      return input.replace(/[^a-zA-Z0-9@._-]/g, ''); // 특수문자 제거 (예시)
-    }
-
-    // XSS 체크 함수 (sanitize 적용)
-    function check_xss(input) {
-      return sanitize(input);
-    }
-
-    // 입력 값 확인 함수
-    function check_input() {
-      const emailInput = document.getElementById('typeEmailX');
-      const passwordInput = document.getElementById('typePasswordX');
-      const emailValue = emailInput.value;
-      const passwordValue = passwordInput.value;
-
-      // 이메일 길이 확인 (5자 이상)
-      if (emailValue.length < 5) {
-        alert('아이디는 최소 5글자 이상 입력해야 합니다.');
-        return false;
-      }
-
-      // 비밀번호 길이 확인 (6자 이상)
-      if (passwordValue.length < 6) {
-        alert('패스워드는 최소 6글자 이상 입력해야 합니다.');
-        return false;
-      }
-
-       // 비밀번호에 특수문자가 1개 이상 포함되어 있는지 확인
-  const hasSpecialChar = passwordValue.match(/[!,@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/) !== null;
-  if (!hasSpecialChar) {
-    alert('패스워드는 특수문자를 1개 이상 포함해야 합니다.');
-    return false;
-  }
-
-  // 비밀번호에 대소문자가 모두 포함되어 있는지 확인
-  const hasUpperCase = passwordValue.match(/[A-Z]+/) !== null;
-  const hasLowerCase = passwordValue.match(/[a-z]+/) !== null;
-  if (!hasUpperCase || !hasLowerCase) {
-    alert('패스워드는 대소문자를 1개 이상 포함해야 합니다.');
-    return false;
-  }
-
-      // XSS 공격 방지 처리
-      const sanitizedEmail = check_xss(emailValue);
-      const sanitizedPassword = check_xss(passwordValue);
-
-      // sanitized 값을 사용하여 이후 처리 로직을 작성
-      console.log(sanitizedEmail, sanitizedPassword);
-
-      session_set();
-
-     document.getElementById('login_form').submit();
-    }
-
-    // 로그인 버튼 클릭 시 check_input 함수 실행
-    document.getElementById("login_btn").addEventListener('click', check_input);
-
-    // 아이디 저장 기능 (쿠키 사용)
-    function init() {
-      const emailInput = document.getElementById('typeEmailX');
-      const idsave_check = document.getElementById('idSaveCheck');
-      let get_id = getCookie("id");
-      if (get_id) {
-        emailInput.value = get_id;
-        idsave_check.checked = true;
-      }
-      session_check(); // 세션 유무 검사
-    }
-
-    // 쿠키에서 값 가져오기
-    function getCookie(name) {
-      let value = "; " + document.cookie;
-      let parts = value.split("; " + name + "=");
-      if (parts.length === 2) return parts.pop().split(";").shift();
-    }
-  </script>
-</body>
+          </section>
+    </body>
 </html>
